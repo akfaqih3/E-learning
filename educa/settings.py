@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,9 +44,11 @@ INSTALLED_APPS = [
     'embed_video',
     # 'debug_toolbar',
     'redisboard',
+
     #apps 
     'courses.apps.CoursesConfig',
     'students.apps.StudentsConfig',
+    # 'account.apps.AccountConfig'
 ]
 
 MIDDLEWARE = [
@@ -137,6 +140,7 @@ MEDIA_ROOT = 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('student_course_list')
 
 #this cache settings of memcached

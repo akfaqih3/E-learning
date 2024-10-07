@@ -3,11 +3,11 @@ from . import views
 from django.views.decorators.cache import cache_page
 
 urlpatterns = [
-    path(
-        'register/',
-        views.StudentRegistrationView.as_view(),
-        name='student_registration'
-    ),
+    # path(
+    #     'register/',
+    #     views.StudentRegistrationView.as_view(),
+    #     name='student_registration'
+    # ),
     path(
         'enroll-course/',
         views.StudentEnrollCourseView.as_view(),
