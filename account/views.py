@@ -6,6 +6,7 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, render,redirect
+from django.contrib.auth import logout
 from .forms import LoginForm , AccountRegistrationForm 
 from django.contrib.auth.decorators import login_required
 from .models import Profile,AccountType
@@ -69,12 +70,10 @@ class LoginView(View):
                     if user.is_active:
                         login(request, user)
                         if user.profile.type == AccountType.teacher:
-                            return redirect('manage_course_list')
-                        return redirect('student_course_list')
-                    else:
-                        return HttpResponse('Disabled account')
-                else:
-                    return HttpResponse('Invalid login')
+                            return redirect('home')
+                        return redirect('home')
+            return render(request, 'registration/login.html', {'form': form})
+                
         else:
             form = LoginForm()
         return render(request, 'registration/login.html', {'form': form})
@@ -83,6 +82,11 @@ class LoginView(View):
         form = LoginForm()
         return render(request, 'registration/login.html', {'form': form})
 
+
+class LogoutView(LoginRequiredMixin,View):
+    def get(self, request):
+        logout(request)
+        return redirect('home')
 
 class ProfileDetailView(LoginRequiredMixin,DetailView):
     model = User

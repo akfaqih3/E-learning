@@ -1,0 +1,28 @@
+<!-- Card item START -->
+
+<a href="{% url "course_detail" course.slug %}" style="hover:transform:scale(1.05);">
+    <div class="card shadow h-100" >
+        <!-- Image -->
+        <img src="{% if course.photo %}{{course.photo.url}}{% else %}assets/images/courses/4by3/08.jpg{% endif %}" class="card-img-top" alt="course image" style=" height:208px ;hover:filter:brightness(0.9);">
+        <div class="card-body pb-0">
+            <!-- Badge and favorite -->
+            <div class="d-flex justify-content-between mb-2">
+                <a href="{% url "course_detail" course.slug %}" class="badge bg-purple bg-opacity-10 text-purple">{{ course.subject.title }}</a>
+                <a href="" class="h6 fw-light mb-0">{{ course.owner.get_full_name }}</a>
+            </div>
+            <!-- Title -->
+            <h5 class="card-title fw-normal"><a href="#"> {{ course.title }}</a></h5>
+            <p class="text-truncate-2 mb-2">{{ course.overview }}</p>
+            <!-- Rating star -->
+        </div>
+        <!-- Card footer -->
+        <div class="card-footer pt-0 pb-3">
+            <hr>
+            <div class="d-flex justify-content-between">
+                <span class="h6 fw-light mb-0"><i class="fa fa-user-graduate text-primary me-2"></i> {{ course.students.count }} students</span>
+                <span class="h6 fw-light mb-0"><i class="fas fa-table text-orange me-2"></i> {{ course.total_modules }} lectures</span>
+            </div>
+        </div>
+    </div>
+</a>
+<!-- Card item END -->

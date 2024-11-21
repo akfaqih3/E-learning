@@ -1,3 +1,4 @@
+from django.forms import BaseModelForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
@@ -15,11 +16,71 @@ from .models import Module, Content
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.db.models import Count
 from .models import Subject
+from account.models import Profile
+from account.models import AccountType
 from django.views.generic.detail import DetailView
 from students.forms import CourseEnrollForm
 from django.core.cache import cache
+from django.views.generic import TemplateView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs: reverse_lazy) -> dict[str]:
+
+        subjects = cache.get('all_subjects')
+        if not subjects:
+            subjects = Subject.objects.annotate(
+                total_courses=Count('courses')
+            )
+        cache.set('all_subjects', subjects)
+
+        
+        all_courses = cache.get('all_courses')
+        if not all_courses:
+            all_courses = Course.objects.annotate(
+                total_modules=Count('modules'),
+                total_students=Count('students')
+                )
+        cache.set('all_courses', all_courses)
+
+        courses_count = cache.get('courses_count')
+        if not courses_count:
+            courses_count = Course.objects.count()
+        cache.set('courses_count', courses_count)
+        
+        accounts_count = cache.get('accounts_count')
+        if not accounts_count:
+            accounts_count = Profile.objects.filter(type=AccountType.student).count()
+
+        accounts = cache.get('accounts')
+        if not accounts:
+            accounts = Profile.objects.filter(type=AccountType.student)[:4]
+        cache.set('accounts', accounts)
+
+        students_count = cache.get('students_count')
+        if not students_count:
+            students_count = Profile.objects.filter(type=AccountType.student).count()
+        cache.set('students_count', students_count)
+
+        teachers_count = cache.get('teachers_count')
+        if not teachers_count:
+            teachers_count = Profile.objects.filter(type=AccountType.teacher).count()
+        cache.set('teachers_count', teachers_count)
+        
+        context ={
+            'subjects': subjects,
+            'all_courses': all_courses,
+            'accounts': accounts,
+            'students_count': students_count,
+            'teachers_count': teachers_count, 
+            'courses_count': courses_count
+        }
+        return context
+    
 
 class OwnerMixin:
     def get_queryset(self):
@@ -36,7 +97,7 @@ class OwnerEditMixin:
 class OwnerCourseMixin(
     OwnerMixin,LoginRequiredMixin, PermissionRequiredMixin):
     model = Course
-    fields = ['subject', 'title', 'slug', 'overview']
+    fields = ['subject', 'title', 'overview','photo']
     success_url = reverse_lazy('manage_course_list')
 
     
@@ -211,7 +272,8 @@ class CourseListView(TemplateResponseMixin, View):
         cache.set('all_subjects', subjects)
 
         all_courses = Course.objects.annotate(
-        total_modules=Count('modules')
+        total_modules=Count('modules'),
+        total_students=Count('students')
         )
 
         if subject:
@@ -226,6 +288,19 @@ class CourseListView(TemplateResponseMixin, View):
             if not courses:
                 courses = all_courses
                 cache.set('all_courses', courses)
+       
+        if request.GET.get('sort_by'):
+            courses = courses.order_by(request.GET.get('sort_by'))
+
+        paginator = Paginator(courses, 4)
+        page = request.GET.get('page')
+        try:
+            courses = paginator.page(page)
+        except PageNotAnInteger:
+            courses = paginator.page(1)
+        except EmptyPage:
+            courses = paginator.page(paginator.num_pages)
+
         return self.render_to_response(
             {
                 'subjects': subjects,
@@ -241,6 +316,12 @@ class CourseDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        instructor = context['object'].owner
+        students = Course.objects.filter(owner=instructor).annotate(
+            total_students=Count('students')
+            )
+        context['students'] = students.count()
+
         context['enroll_form'] = CourseEnrollForm(
             initial={'course': self.object}
         )

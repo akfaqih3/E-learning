@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Edit your account{% endblock %}
+{% block content %}
+
+
+
+
+
+
+
+<h1>Edit your account</h1>
+<p>You can edit your account using the following form:</p>
+<form method="post" enctype="multipart/form-data">
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Save changes"></p>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+{% load static %}
+
+<head>
+  {% include "includes/head.html" %}
+</head>
+
+    <section class="p-0 d-flex align-items-center position-relative overflow-hidden">
+        
+        <div class="container-fluid">
+            <div class="row">
+            
+                <!-- Right -->
+                <div class="col-12 col-lg-6 m-auto">
+                    <div class="row my-5">
+                        <div class="col-sm-10 col-xl-8 m-auto">
+                            <!-- Title -->
+                            <img src="{% static 'assets/images/element/03.svg' %}" class="h-40px mb-2" alt="">
+                            <h2>Sign up for your account!</h2>
+                            <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p>
+                            
+                            {% if form.errors %}
+                            <p class="text-danger">{{form.errors}}</p>
+                            {% endif %}
+                            <!-- Form START -->
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <!-- first_name -->
+                                <div class="mb-4">
+                                    <label for="first_name" class="form-label">First Name</label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+                                        <input type="text" name="first_name" class="form-control border-0 bg-light rounded-end ps-1" placeholder="First Name" id="first_name">
+                                    </div>
+                                </div>
+                           
+                                <!-- Button -->
+                                <div class="align-items-center mt-0">
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary mb-0" type="submit">Sign Up</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- Form END -->
+
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

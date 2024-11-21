@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+{% block title %}My courses{% endblock %}
+{% block content %}
+   
+    <section class="pt-0">
+	<div class="container">
+        <div class="row">
+            <h1>My courses</h1>
+            <div class="col-md-3">
+                <div class="card shadow rounded-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Create new course</h5>
+                        <a href="{% url "course_create" %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> new course</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+	   
+		<div class="row mt-4">
+   
+            {% for course in object_list %}
+            <div class="col-md-4">
+                <div class="card shadow rounded-3">
+                    <div class="card-body">
+                        <img src="{% if course.photo %} {{course.photo.url}}{% endif %}" class="card-img-top" alt="course image">
+                        <h5 class="card-title">{{course.title}}</h5>
+                        
+                        <a href="{% url "module_content_list" course.id %}" class="btn btn-info w-100 mb-4">modules</a>
+                        <a href="{% url "course_module_update" course.id %}" class="btn btn-info w-100 mb-4">Edit modules</a>
+                        <div class="d-flex justify-content-around w-100">
+                            <a href="{% url "course_edit" course.id %}" class="btn btn-outline-primary">Edit</a>
+                            <a href="{% url "course_delete" course.id %}" class="btn btn-outline-danger ">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+		</div> <!-- Row END -->
+	</div>	
+</section>
+{% endblock %}

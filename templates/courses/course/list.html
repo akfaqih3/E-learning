@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}
+ {% if subject %}
+ {{ subject.title }} courses
+ {% else %}
+ All courses
+ {% endif %}
+{% endblock %}
+{% block content %}
+ <!-- =======================
+Page Banner START -->
+<section class="bg-blue align-items-center d-flex" style="background:url(assets/images/pattern/04.png) no-repeat center center; background-size:cover;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12 text-center">
+				<!-- Title -->
+				<h1 class="text-white">{% if subject.title %}{{ subject.title }}{% else %}All courses{% endif %}</h1>
+				<!-- Breadcrumb -->
+				<div class="d-flex justify-content-center">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb breadcrumb-dark breadcrumb-dots mb-0">
+							<li class="breadcrumb-item"><a href="{% url "home" %}">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">{% if subject %}{{ subject.title }}{% else %}Categories{% endif %}</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- =======================
+Page content START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main content START -->
+            <div class="col-lg-12 col-xl-12">
+    
+                <!-- Search option START -->
+                <div class="row mb-4 align-items-center">
+                    <!-- Search bar -->
+                    <div class="col-xl-6">
+                        <form class="bg-body shadow rounded p-2">
+                            <div class="input-group input-borderless">
+                                <input class="form-control me-1" type="search" placeholder="Find your course">
+                                <button type="button" class="btn btn-primary mb-0 rounded z-index-1"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+    
+                    <!-- Select option -->
+                    <div class="col-xl-3 mt-3 mt-xl-0">
+                        <form class="bg-body shadow rounded p-2 input-borderless">
+                            <select id="sort_by" name="sort_by"  class="form-select form-select-sm js-choice border-0" aria-label=".form-select-sm" onChange="window.location.href='?sort_by='+this.value">
+                                <option value="">...</option>
+                                <option value="title">Title</option>
+                                <option value="created">Created</option>
+                                <option value="students">Students</option>
+                            </select>
+                        </form>
+                    </div>
+    
+                    <!-- Content -->
+                    <div class="col-12 col-xl-3 d-flex justify-content-between align-items-center mt-3 mt-xl-0">
+                        <!-- Advanced filter responsive toggler START -->
+                        <button class="btn btn-primary mb-0 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                            <i class="fas fa-sliders-h me-1"></i> Show filter
+                        </button>
+                        <!-- Advanced filter responsive toggler END -->
+                        <p class="mb-0 text-end">Showing {{ courses.start_index }}-{{ courses.end_index }} of {{ courses.paginator.count }} results</p>
+                    </div>
+    
+                </div>
+                <!-- Search option END -->
+    
+                <!-- Course Grid START -->
+                <div class="row g-4">
+                    {% for course in courses %}
+                        <!-- Card item START -->
+                        <div class="col-sm-6 col-xl-3">
+                        {% include "includes/course_card.html" with course=course %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- Course Grid END -->
+    
+                <!-- Pagination START -->
+                 <div class="col-12">
+                    <nav class="mt-4 d-flex justify-content-center" aria-label="navigation">
+                        <ul class="pagination pagination-primary-soft rounded mb-0"> 
+                            {% if courses.has_previous %}
+                            <li class="page-item mb-0"><a class="page-link" href="?page={{ courses.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                            {% endif %}
+                            {% for page in courses.paginator.page_range %}
+                            <li class="page-item mb-0 {% if page == courses.number %}active{% endif %}"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% endfor %}
+                            {% if courses.has_next %}
+                            <li class="page-item mb-0"><a class="page-link" href="?page={{ courses.next_page_number }}"><i class="fas fa-angle-double-right"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- Main content END -->
+        </div><!-- Row END -->
+    </div>
+</section>
+
+{% endblock %}

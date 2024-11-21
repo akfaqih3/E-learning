@@ -1,14 +1,20 @@
+from typing import Iterable
 from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from .fields import OrderField
 from django.template.loader import render_to_string
+from django.template.defaultfilters import slugify
 
 
 class Subject(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
+    photo = models.ImageField(
+        upload_to='courses/subjects/photos/%Y/%m/%d/',
+        blank=True
+        )
     class Meta:
         ordering = ['title']
 
@@ -37,9 +43,17 @@ class Course(models.Model):
         related_name='courses_joined',
         blank=True
     )
+    photo = models.ImageField(
+        upload_to='courses/courses/photos/%Y/%m/%d/',
+        blank=True
+        )
 
     class Meta:
         ordering = ['-created']
+
+    def save(self, *args,**kwargs) -> None:
+        self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -52,6 +66,10 @@ class Module(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     order = OrderField(blank=True, for_fields=['course'])
+    photo = models.ImageField(
+        upload_to='courses/courses/modules/photos/%Y/%m/%d/',
+        blank=True
+        )
 
     class Meta:
         ordering = ['order']
@@ -106,18 +124,28 @@ class ItemBase(models.Model):
 
 class Text(ItemBase):
     content = models.TextField()
-
+    
+    def is_text(self):
+        return True
 
 class File(ItemBase):
     file = models.FileField(upload_to='files')
+    
+    def is_file(self):
+        return True
 
 
 class Image(ItemBase):
     file = models.FileField(upload_to='images')
 
+    def is_image(self):
+        return True
     
 class Video(ItemBase):
     url = models.URLField()
+
+    def is_video(self):
+        return True
 
 
 

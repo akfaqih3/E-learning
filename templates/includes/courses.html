@@ -1,0 +1,134 @@
+<section>
+	<div class="container">
+		<!-- Title -->
+		<div class="row mb-4">
+			<div class="col-lg-8 mx-auto text-center">
+				<h2 class="fs-1">Most Popular Courses</h2>
+				<p class="mb-0">Choose from hundreds of courses from specialist organizations</p>
+			</div>
+		</div>
+
+		<!-- Tabs START -->
+		<ul class="nav nav-pills nav-pills-bg-soft justify-content-sm-center mb-4 px-3" id="course-pills-tab" role="tablist">
+           <!-- Tab item -->
+			<li class="nav-item me-2 me-sm-5">
+				<button class="nav-link mb-2 mb-md-0 active" id="course-pills-tab-all" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-all" type="button" role="tab" aria-controls="course-pills-tabs-1" aria-selected="false">ALL</button>
+			</li>
+
+            {% for subject in subjects %}
+            <li class="nav-item me-2 me-sm-5">
+                <button class="nav-link mb-2 mb-md-0" id="course-pills-tab-{{subject.id}}" data-bs-toggle="pill" data-bs-target="#course-pills-tabs-{{subject.id}}" type="button" role="tab" aria-controls="course-pills-tabs-{{subject.id}}" aria-selected="false">{{subject.title}}</button>
+            </li>
+			{% endfor %}
+		</ul>
+		<!-- Tabs END -->
+
+		<!-- Tabs content START -->
+		<div class="tab-content" id="course-pills-tabContent">
+			
+
+
+			<!-- Content START -->
+			<div class="tab-pane fade show active" id="course-pills-tabs-all" role="tabpanel" aria-labelledby="course-pills-tab-all">
+				<div class="row g-4">
+					{% for course in all_courses.all %} 
+                        <div class="col-sm-6 col-lg-4 col-xl-3">
+                            {% include "includes/course_card.html" with course=course %}
+                        </div>
+                    {% endfor %}
+				</div>
+			</div>
+			<!-- Content END -->
+
+            {% for subject in subjects %}
+            <div class="tab-pane fade" id="course-pills-tabs-{{subject.id}}" role="tabpanel" aria-labelledby="course-pills-tab-{{subject.id}}">
+                <div class="row g-4">
+                    {% for course in subject.courses.all %} 
+                        <div class="col-sm-6 col-lg-4 col-xl-3">
+                            {% include "includes/course_card.html" %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+		</div>
+		<!-- Tabs content END -->
+	</div>
+</section>
+
+
+<section class="pt-0 pt-lg-5">
+	<div class="container position-relative">
+		<!-- SVG decoration START -->
+		<figure class="position-absolute top-50 start-50 translate-middle ms-2">
+			<svg>
+				<path class="fill-white opacity-4" d="m496 22.999c0 10.493-8.506 18.999-18.999 18.999s-19-8.506-19-18.999 8.507-18.999 19-18.999 18.999 8.506 18.999 18.999z"/>
+				<path class="fill-white opacity-4" d="m775 102.5c0 5.799-4.701 10.5-10.5 10.5-5.798 0-10.499-4.701-10.499-10.5 0-5.798 4.701-10.499 10.499-10.499 5.799 0 10.5 4.701 10.5 10.499z"/>
+				<path class="fill-white opacity-4" d="m192 102c0 6.626-5.373 11.999-12 11.999s-11.999-5.373-11.999-11.999c0-6.628 5.372-12 11.999-12s12 5.372 12 12z"/>
+				<path class="fill-white opacity-4" d="m20.499 10.25c0 5.66-4.589 10.249-10.25 10.249-5.66 0-10.249-4.589-10.249-10.249-0-5.661 4.589-10.25 10.249-10.25 5.661-0 10.25 4.589 10.25 10.25z"/>
+			</svg>
+		</figure>
+		<!-- SVG decoration END -->
+		
+		<div class="row">
+			<div class="col-12">
+				<div class="bg-info p-4 p-sm-5 rounded-3">
+					<div class="row position-relative">
+						<!-- Svg decoration -->
+						<figure class="fill-white opacity-1 position-absolute top-50 start-0 translate-middle-y">
+							<svg width="141px" height="141px">
+								<path	d="M140.520,70.258 C140.520,109.064 109.062,140.519 70.258,140.519 C31.454,140.519 -0.004,109.064 -0.004,70.258 C-0.004,31.455 31.454,-0.003 70.258,-0.003 C109.062,-0.003 140.520,31.455 140.520,70.258 Z"/>
+							</svg>
+						</figure>
+						<!-- Action box -->
+						<div class="col-11 mx-auto position-relative">
+							<div class="row align-items-center">
+								<!-- Title -->
+								<div class="col-lg-7">
+									<h3 class="text-white">Become an Instructor!</h3>
+									<p class="text-white mb-3 mb-lg-0">Speedily say has suitable disposal add boy. On forth doubt miles of child. Exercise joy man children rejoiced. Yet uncommonly his ten who diminution astonished.</p>
+								</div>
+								<!-- Content and input -->
+								<div class="col-lg-5 text-lg-end">
+									<a href="{% url "register" %}" class="btn btn-outline-warning mb-0">Start Teaching Today</a>
+								</div>
+							</div>
+						</div>
+					</div> <!-- Row END -->
+				</div>
+			</div>
+		</div> <!-- Row END -->
+	</div>
+</section>
+
+<!-- =======================
+Trending courses START -->
+<section class="pb-5 pt-0 pt-lg-5">
+	<div class="container">
+		<!-- Title -->
+		<div class="row mb-4">
+			<div class="col-lg-8 mx-auto text-center">
+				<h2 class="fs-1">Our Trending Courses</h2>
+				<p class="mb-0">Check out most 🔥 courses in the market</p>
+			</div>
+		</div>
+		<div class="row">
+			<!-- Slider START -->
+			<div class="tiny-slider arrow-round arrow-blur arrow-hover">
+				<div class="row tiny-slider-inner pb-1" data-autoplay="true" data-arrow="true" data-edge="2" data-dots="false" data-items="3" data-items-lg="2" data-items-sm="1">
+                    {% for course in all_courses.all|slice:":3" %}
+                        <div class="col-sm-6 col-lg-4 col-xl-4">
+                            {% include "includes/course_card.html" with course=course %}
+                        </div>
+                    {% endfor %}
+			
+{% comment %} 
+					<!-- Card item START -->
+			
+					<!-- Card item END --> {% endcomment %}
+				</div>
+			</div>
+			<!-- Slider END -->
+		</div>
+	</div>
+</section>

@@ -1,0 +1,57 @@
+
+{% extends "base.html" %}
+{% block title %}
+{% comment %} 
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+                <h1>
+                    {% if object %}
+                    Edit course "{{ object.title }}"
+                    {% else %}
+                    Create a new course
+                    {% endif %}
+                </h1>
+                <div class="col-md-3">
+                    <div class="card shadow rounded-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Course info</h5>
+                            <form method="post" enctype="multipart/form-data">
+                                {{ form.as_p }}
+                                {% csrf_token %}
+                                <p><input type="submit" value="Save course"></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+
+
+
+ {% if object %}
+ Edit course "{{ object.title }}"
+ {% else %}
+ Create a new course
+ {% endif %}
+{% endblock %}
+{% block content %}
+ <h1>
+ {% if object %}
+ Edit course "{{ object.title }}"
+ {% else %}
+ Create a new course
+ {% endif %}
+ </h1>
+ <div class="module">
+ <h2>Course info</h2>
+ <form method="post" enctype="multipart/form-data">
+ {{ form.as_p }}
+ {% csrf_token %}
+ <p><input type="submit" value="Save course"></p>
+ </form>
+ </div>
+
+ 
+{% endblock %}

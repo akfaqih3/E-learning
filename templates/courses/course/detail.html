@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+{% block title %}
+ {{ object.title }}
+{% endblock %}
+{% block content %}
+ 
+<!-- =======================
+Page intro START -->
+<section class="bg-light py-0 py-sm-5">
+	<div class="container">
+		<div class="row py-5">
+			<div class="col-lg-8">
+				<!-- Badge -->
+				<h6 class="mb-3 font-base bg-primary text-white py-2 px-4 rounded-2 d-inline-block"> {{ object.subject.title }}</h6>
+				<!-- Title -->
+				<h1>{{ object.title }}</h1>
+				<!-- Text -->
+				<p>{{ object.overview|truncatechars:256 }}</p>
+				<!-- Content -->
+				<ul class="list-inline mb-0">
+					<li class="list-inline-item h6 me-3 mb-1 mb-sm-0"><i class="fas fa-user-graduate text-orange me-2"></i>{{object.students.count}} Enrolled</li>
+					<li class="list-inline-item h6 me-3 mb-1 mb-sm-0"><i class="fas fa-user-tie text-success me-2"></i>{{object.owner.get_full_name}}</li>
+					<li class="list-inline-item h6 me-3 mb-1 mb-sm-0"><i class="bi bi-patch-exclamation-fill text-danger me-2"></i>Last updated {{ object.created|date:"M d, Y" }}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<!-- =======================
+Page content START -->
+<section class="pb-0 py-lg-5">
+	<div class="container">
+		<div class="row">
+			<!-- Main content START -->
+			<div class="col-lg-8">
+				<div class="bg-body shadow rounded-2 p-4">
+					<!-- Tabs START -->
+					<ul class="nav nav-pills nav-tabs-line pt-0" id="course-pills-tab" role="tablist">
+						<!-- Tab item -->
+						<li class="nav-item me-2 me-sm-4" role="presentation">
+							<button class="nav-link mb-2 mb-md-0 active" id="course-pills-tab-1" data-bs-toggle="pill" data-bs-target="#course-pills-1" type="button" role="tab" aria-controls="course-pills-1" aria-selected="true">Overview</button>
+						</li>
+						<!-- Tab item -->
+						<li class="nav-item me-2 me-sm-4" role="presentation">
+							<button class="nav-link mb-2 mb-md-0" id="course-pills-tab-2" data-bs-toggle="pill" data-bs-target="#course-pills-2" type="button" role="tab" aria-controls="course-pills-2" aria-selected="false">Curriculum</button>
+						</li>
+						<!-- Tab item -->
+						<li class="nav-item me-2 me-sm-4" role="presentation">
+							<button class="nav-link mb-2 mb-md-0" id="course-pills-tab-3" data-bs-toggle="pill" data-bs-target="#course-pills-3" type="button" role="tab" aria-controls="course-pills-3" aria-selected="false">Instructor</button>
+						</li>
+					
+					</ul>
+					<hr>
+					<!-- Tabs END -->
+
+					<!-- Tab contents START -->
+					<div class="tab-content pt-2" id="course-pills-tabContent">
+						<!-- Content START -->
+						<div class="tab-pane fade show active" id="course-pills-1" role="tabpanel" aria-labelledby="course-pills-tab-1">
+							<!-- Course detail START -->
+							<h5 class="mb-3">Course Description</h5>
+							<p class="mb-3">{{object.overview}}</strong></p>							
+							
+							<!-- List content -->
+							<h5 class="mt-4">What you’ll learn</h5>
+							<ul class="list-group list-group-borderless mb-3">
+                                {% for module in object.modules.all %}
+                                    <li class="list-group-item h6 fw-light d-flex mb-0"><i class="fas fa-check-circle text-success me-2"></i>{{module.title}}</li>
+                                {% endfor %}
+								
+							</ul>
+							<!-- Course detail END -->
+
+						</div>
+						<!-- Content END -->
+
+						<!-- Content START -->
+						<div class="tab-pane fade" id="course-pills-2" role="tabpanel" aria-labelledby="course-pills-tab-2">
+							<!-- Course accordion START -->
+							<div class="accordion accordion-icon accordion-bg-light" id="accordionExample2">
+                                {% for module in object.modules.all %}
+								<!-- Item -->
+								<div class="accordion-item mb-3">
+									<h6 class="accordion-header font-base" id="heading-1">
+										<button class="accordion-button fw-bold rounded d-sm-flex d-inline-block collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{module.id}}" aria-expanded="true" aria-controls="collapse-{{module.id}}">
+											{{module.title}}
+											<span class="small ms-0 ms-sm-2">({{module.contents.count}} Lectures)</span>
+										</button>
+									</h6>
+									<div id="collapse-{{module.id}}" class="accordion-collapse collapse show" aria-labelledby="heading-{{module.id}}" data-bs-parent="#accordionExample2">
+                                        {% for content in module.contents.all %}
+                                            {% with item=content.item %}
+                                                {% if item.is_text %}
+                                                    <div class="accordion-body mt-3">
+                                                        <span class="d-inline-block text-truncate ms-2 mb-0 h6 fw-light w-100px w-sm-200px w-md-400px">
+                                                            <i class="fas fa-check-circle text-primary"></i>
+                                                            {{item.title}}
+                                                        </span>
+                                                            <div class="d-flex mx-4 justify-content-between align-items-center">
+                                                                <div class="position-relative d-flex align-items-center">
+                                                                    <p class="mb-0">{{item.content|truncatechars:256}}</p>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                
+                                                {% elif item.is_image %}
+                                                    <!-- PDF -->
+                                                    <div class="accordion-body mt-3">
+                                                        <span class="d-inline-block text-truncate ms-2 mb-0 h6 fw-light w-100px w-sm-200px w-md-400px">
+                                                            <i class="fas fa-file-image text-primary"></i>
+                                                            {{item.title}}
+                                                        </span>
+                                                    </div>
+                                                {% elif item.is_video %}
+                                                    <!-- Video -->
+                                                    <div class="accordion-body mt-3">
+                                                        <span class="d-inline-block text-truncate ms-2 mb-0 h6 fw-light w-100px w-sm-200px w-md-400px">
+                                                            <i class="fas fa-play-circle text-primary"></i>
+                                                            {{item.title}}
+                                                        </span>
+                                                    </div>
+
+                                                {% elif item.is_file %}
+                                                    <!-- PDF -->
+                                                    <div class="accordion-body mt-3">
+                                                        <span class="d-inline-block text-truncate ms-2 mb-0 h6 fw-light w-100px w-sm-200px w-md-400px">
+                                                            <i class="fas fa-file-pdf text-primary"></i>
+                                                            {{item.title}}
+                                                        </span>
+                                                    </div>
+                                                {% else %}
+                                                    
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+									</div>
+								</div>
+                                {% endfor %}
+							</div>
+							<!-- Course accordion END -->
+						</div>
+						<!-- Content END -->
+
+						<!-- Content START -->
+						<div class="tab-pane fade" id="course-pills-3" role="tabpanel" aria-labelledby="course-pills-tab-3">
+							<!-- Card START -->
+							<div class="card mb-0 mb-md-4">
+								<div class="row g-0 align-items-center">
+									<div class="col-md-5">
+										<!-- Image -->
+										<img src="{%if object.owner.profile.photo %} {{object.owner.profile.photo.url}} {% endif %}" class="img-fluid rounded-3" alt="instructor-image">
+									</div>
+									<div class="col-md-7">
+										<!-- Card body -->
+										<div class="card-body">
+											<!-- Title -->
+											<h3 class="card-title mb-0">{{object.owner.get_full_name}}</h3>
+											<p class="mb-2">Instructor of {{object.subject.title}}</p>
+											<!-- Social button -->
+											</ul>
+
+											<!-- Info -->
+											<ul class="list-inline">
+												<li class="list-inline-item">
+													<div class="d-flex align-items-center me-3 mb-2">
+														<span class="icon-md bg-orange bg-opacity-10 text-orange rounded-circle"><i class="fas fa-user-graduate"></i></span>
+														<span class="h6 fw-light mb-0 ms-2">{{students}} Students</span>
+													</div>
+												</li>
+												
+												<li class="list-inline-item">
+													<div class="d-flex align-items-center me-3 mb-2">
+														<span class="icon-md bg-danger bg-opacity-10 text-danger rounded-circle"><i class="fas fa-play"></i></span>
+														<span class="h6 fw-light mb-0 ms-2">{{object.owner.courses_created.count}} Courses</span>
+													</div>
+												</li>
+												
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Card END -->
+							
+							<div class="col-12">
+								<ul class="list-group list-group-borderless mb-0">
+									<li class="list-group-item pb-0">Mail:<a href="#" class="ms-2">{{object.owner.email}}</a></li>
+								</ul>
+							</div>
+						</div>
+						
+						<!-- Content END -->
+					</div>
+					<!-- Tab contents END -->
+				</div>
+			</div>
+			<!-- Main content END -->
+
+			<!-- Right sidebar START -->
+			<div class="col-lg-4 pt-5 pt-lg-0">
+				<div class="row mb-5 mb-lg-0">
+					<div class="col-md-6 col-lg-12">
+						<!-- Video START -->
+						<div class="card shadow p-2 mb-4 z-index-9">
+							<div class="overflow-hidden rounded-3">
+								<img src="{{object.photo.url}}" class="card-img" alt="course image">
+								<!-- Overlay -->
+								<div class="bg-overlay bg-dark opacity-3"></div>
+								{% comment %} <div class="card-img-overlay d-flex align-items-start flex-column p-3">
+									<!-- Video button and link -->
+									<div class="m-auto">
+										<a href="{{object.modules.0.contents.0}}" class="btn btn-lg text-danger btn-round btn-white-shadow mb-0" data-glightbox="" data-gallery="course-video">
+											<i class="fas fa-play"></i>
+										</a>
+									</div>
+								</div> {% endcomment %}
+							</div>
+		
+							<!-- Card body -->
+							<div class="card-body px-3">
+								<!-- Info -->
+								<div class="d-flex justify-content-between align-items-center">
+									<!-- Price and time -->
+									<div>
+										<div class="d-flex align-items-center">
+											{{object.subject.title}} 
+										</div>
+										<p class="mb-0 text-primary sm"></i>{{object.created|date:"M d, Y"}}</p>
+									</div>
+
+									<!-- Share button with dropdown -->
+									<div class="dropdown">
+										<!-- Share button -->
+										<a href="#" class="btn btn-sm btn-light rounded small" role="button" id="dropdownShare" data-bs-toggle="dropdown" aria-expanded="false">
+											<i class="fas fa-fw fa-share-alt"></i>
+										</a>
+										{% comment %} <!-- dropdown button -->
+										<ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded" aria-labelledby="dropdownShare">
+											<li><a class="dropdown-item" href="#"><i class="fab fa-twitter-square me-2"></i>Twitter</a></li>
+											<li><a class="dropdown-item" href="#"><i class="fab fa-facebook-square me-2"></i>Facebook</a></li>
+											<li><a class="dropdown-item" href="#"><i class="fab fa-linkedin me-2"></i>LinkedIn</a></li>
+											<li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Copy link</a></li>
+										</ul> {% endcomment %}
+									</div>
+								</div>
+
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+									<span class="h6 fw-light mb-0"><i class="fas fa-fw fa-book-open text-primary"></i>{{object.modules.count}} Lectures</span>
+									<span>30</span>
+								</li>
+								<!-- Buttons -->
+								<div class="mt-4">
+                                    {% if request.user.is_authenticated %}
+                                       
+                                            <form action="{% url "student_enroll_course" %}" method="post">
+                                            {{ enroll_form }}
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn btn-success mb-0 w-100" value="Enroll now">
+                                            </form>
+                                    {% else %}
+                                    <a href="{% url "register" %}" class="btn btn-success mb-0 w-100">
+                                        Register to enroll
+                                    </a>
+                                    {% endif %}
+								</div>
+							</div>
+						</div>
+						<!-- Video END -->
+
+						<!-- Course info END -->
+					</div>
+
+					
+				</div><!-- Row End -->
+			</div>
+			<!-- Right sidebar END -->
+
+		</div><!-- Row END -->
+	</div>
+</section>
+{% endblock %}

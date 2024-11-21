@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load cache %}
+{% block title %}
+ {{ object.title }}
+{% endblock %}
+{% block content %}
+ 
+
+
+
+
+<section class="pt-0">
+	<div class="container">
+		<div class="row">
+
+			<!-- Right sidebar START -->
+			<div class="col-xl-3">
+				<!-- Responsive offcanvas body START -->
+				<nav class="navbar navbar-light navbar-expand-xl mx-0">
+					<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+						<!-- Offcanvas header -->
+						<div class="offcanvas-header bg-light">
+							<h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+							<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+						</div>
+						<!-- Offcanvas body -->
+						<div class="offcanvas-body p-3 p-xl-0">
+							<div class="bg-dark border rounded-3 pb-0 p-3 w-100">
+								<!-- Dashboard menu -->
+                                    <ul id="modules" class="list-group list-group-dark list-group-borderless">
+                                        {% for module in object.modules.all %}       
+                                        <a class="" href=" {% url "student_course_detail_module" object.id module.id %}">
+                                            <li  data-id="{{ module.id }}" class="list-group-item justify-content-between align-items-center">
+                                                <i class="bi bi-card-checklist fa-fw me-2 d-flex">Module{{module.order|add:1}}</i>
+                                                    <p>{{module.title}}</p>
+                                            </li>
+                                        </a>
+                                        {% endfor %}
+                                    </ul>
+									
+							</div>
+						</div>
+					</div>
+				</nav>
+				<!-- Responsive offcanvas body END -->
+			</div>
+			<!-- Right sidebar END -->
+
+			<!-- Main content START -->
+			<div class="col-xl-9">
+				<div class="card border rounded-3 overflow-hidden">
+					<!-- Card header START -->
+					<div class="card-header border-bottom">
+						<h1 class="mb-0 text-center"> {{object.title}} </h1>
+                        <h5 class="text-primary">{{module.title}}</h5>
+					</div>
+					<!-- Card header END -->
+
+					<!-- Card body START -->
+					<div class="card-body overflow-hidden">
+
+						<!-- Search and select START -->
+						<div class="row g-3 align-items-center justify-content-between mb-4">
+							
+						</div>
+						<!-- Search and select END -->
+
+						<!-- Course list table START -->
+						<div class="table-responsive border-0 ">
+                            
+							<table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+								<!-- Table head -->
+								
+
+								<!-- Table body START -->
+								<tbody>
+                                    {% cache 600 module_contents module %}
+                                        {% for content in module.contents.all %}
+                                            <tr class="border-1">
+                                                <td class="border-0 rounded w-100">
+                                                    <div class="">
+                                                        {% with item=content.item %}
+                                                           <div class="">
+                                                            <h3>{{ item.title }}</h3>
+                                                            {{ item.render }}
+                                                            </div>
+                                                        {% endwith %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                        {% endfor %}
+                                    {% endcache %}
+								</tbody>
+								<!-- Table body END -->
+							</table>
+						</div>
+						<!-- Course list table END -->
+
+					</div>
+					<!-- Card body START -->
+				</div>
+			</div>
+			<!-- Main content END -->
+		</div> <!-- Row END -->
+	</div>	
+</section>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Delete course{% endblock %}
+{% block content %}
+
+    <section class="pt-0">
+	<div class="container">
+        <div class="row">
+            <h1>Delete course "{{ object.title }}"</h1>
+            <div class="col-md-3">
+                <div class="card shadow rounded-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Delete course</h5>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <p>Are you sure you want to delete "{{ object }}"?</p>
+                            <input type="submit" value="Confirm">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+	   
+    </section>
+{% comment %} 
+ <h1>Delete course "{{ object.title }}"</h1>
+ <div class="module">
+ <form action="" method="post">
+ {% csrf_token %}
+ <p>Are you sure you want to delete "{{ object }}"?</p>
+ <input type="submit" value="Confirm">
+ </form>
+ </div> {% endcomment %}
+{% endblock %}
